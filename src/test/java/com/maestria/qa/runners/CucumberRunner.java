@@ -1,10 +1,11 @@
 package com.maestria.qa.runners;
 
-import io.cucumber.junit.Cucumber;
-import io.cucumber.junit.CucumberOptions;
 import org.junit.runner.RunWith;
 
-@RunWith(Cucumber.class)
+import io.cucumber.junit.CucumberOptions;
+import net.serenitybdd.cucumber.CucumberWithSerenity;
+
+@RunWith(CucumberWithSerenity.class)
 @CucumberOptions(
     features = "src/test/resources/features",
     glue = "com.maestria.qa.stepdefs",

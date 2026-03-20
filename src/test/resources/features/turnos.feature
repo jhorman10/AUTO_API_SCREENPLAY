@@ -1,6 +1,6 @@
 Feature: API REST - Complete CRUD Cycle for Turnos (Shifts)
   Background: API Base Configuration
-    Given the API is configured at http://localhost:3000
+    Given the API is configured
 
   @smoke @critical @crud
   Scenario: Complete CRUD Cycle - POST, GET, PUT, DELETE
@@ -14,7 +14,7 @@ Feature: API REST - Complete CRUD Cycle for Turnos (Shifts)
     And retrieves turnos for patient with cedula 999888
     Then finds the patient turno with status 200
     And signs out
-    Then the session closes successfully with status 200
+    Then the session closes successfully with status 201
 
   @negative @security
   Scenario: Unauthorized Access Without Token

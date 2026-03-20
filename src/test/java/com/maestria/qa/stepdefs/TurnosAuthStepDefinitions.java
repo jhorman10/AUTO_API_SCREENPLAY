@@ -18,14 +18,15 @@ import com.maestria.qa.tasks.GetTurnosByCedula;
 import com.maestria.qa.tasks.SignIn;
 import com.maestria.qa.tasks.SignOut;
 import com.maestria.qa.tasks.SignUp;
+import com.maestria.qa.utils.ApiConfig;
 import com.maestria.qa.utils.RestContext;
 
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.When;
-import io.cucumber.java.en.Then;
 import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import net.serenitybdd.screenplay.Actor;
 import static net.serenitybdd.screenplay.GivenWhenThen.seeThat;
 
@@ -42,6 +43,8 @@ public class TurnosAuthStepDefinitions {
     @Before
     public void setupStage() {
         logger.info("Setting up test stage");
+        ApiTester.prepareStage();
+        ApiConfig.getBaseUrl();
         RestContext.clear();
     }
 
@@ -49,20 +52,21 @@ public class TurnosAuthStepDefinitions {
     public void cleanupStage() {
         logger.info("Cleaning up test stage");
         RestContext.clear();
+        ApiTester.cleanUpStage();
     }
 
-    @Given("the API is configured at http://localhost:3000")
+    @Given("the API is configured")
     public void apiConfigured() {
-        logger.info("API configured");
+        logger.info("API configured at {}", ApiConfig.getBaseUrl());
     }
 
     @When("a new user registers with email {string} and password {string}")
     public void registersNewUser(String email, String password) {
         actor = ApiTester.withDefaultName();
-        currentEmail = email;
+        currentEmail = buildUniqueEmail(email);
         currentPassword = password;
-        logger.info("Registering user: {}", email);
-        actor.attemptsTo(SignUp.withCredentials(email, password));
+        logger.info("Registering user: {}", currentEmail);
+        actor.attemptsTo(SignUp.withCredentials(currentEmail, password));
     }
 
     @Then("the registration is successful with status {int}")
@@ -80,8 +84,10 @@ public class TurnosAuthStepDefinitions {
 
     @And("signs in with email {string} and password {string}")
     public void signsIn(String email, String password) {
-        logger.info("Signing in with email: {}", email);
-        actor.attemptsTo(SignIn.withCredentials(email, password));
+        String loginEmail = (currentEmail != null) ? currentEmail : email;
+        String loginPassword = (currentPassword != null) ? currentPassword : password;
+        logger.info("Signing in with email: {}", loginEmail);
+        actor.attemptsTo(SignIn.withCredentials(loginEmail, loginPassword));
     }
 
     @Then("the login is successful with status {int}")
@@ -202,5 +208,13 @@ public class TurnosAuthStepDefinitions {
     public void triesToFetchHistoryWithoutToken() {
         actor = ApiTester.withDefaultName();
         actor.attemptsTo(GetDashboardHistory.withToken(""));
+    }
+
+    private String buildUniqueEmail(String baseEmail) {
+        String[] parts = baseEmail.split("@", 2);
+        if (parts.length != 2) {
+            return baseEmail;
+        }
+        return parts[0] + "+" + System.currentTimeMillis() + "@" + parts[1];
     }
 }

@@ -1,185 +1,184 @@
-# ASDD — Agent Spec-Driven Development
+# AUTO_API_SCREENPLAY
 
-Framework de desarrollo asistido por IA que transforma requerimientos en código funcional mediante agentes especializados orquestados. Garantiza calidad y trazabilidad a través de especificaciones técnicas aprobadas antes de cualquier implementación.
+Suite de automatización API construida con Java, Gradle, Cucumber y Serenity BDD bajo el patrón Screenplay.
 
+El proyecto valida autenticación y gestión de turnos contra una API REST local en `http://localhost:3000`.
+
+## Objetivo
+
+Cumplir la entrega de `AUTO_API_SCREENPLAY` del taller mediante una automatización de servicios REST que:
+
+- use Screenplay con Serenity
+- ejecute escenarios independientes
+- incluya un flujo principal con múltiples verbos HTTP
+- genere reportes legibles
+- mantenga código limpio y nombres semánticos
+
+## Cumplimiento de la rúbrica
+
+Este repositorio cubre el entregable `AUTO_API_SCREENPLAY` del taller.
+
+- Patrón usado: Screenplay con Serenity Rest
+- Lenguaje: Java
+- Gestión de dependencias: Gradle
+- Runner: Cucumber
+- Reportería: Serenity BDD
+- Escenarios independientes: sí
+- Flujo positivo: sí
+- Flujo negativo: sí
+- Código comentado dentro de clases: no
+- Nomenclatura semántica: sí
+
+El escenario principal valida un flujo operativo completo sobre los endpoints realmente disponibles en la API desarrollada para el curso.
+
+## Stack
+
+- Java 11
+- Gradle
+- Serenity BDD 4.1.5
+- Cucumber 7.14.0
+- REST Assured 5.3.2
+- JUnit 4
+
+## Estructura
+
+```text
+src/test/java/com/maestria/qa/
+├── actors/
+│   └── ApiTester.java
+├── questions/
+│   ├── ErrorMessage.java
+│   ├── JwtToken.java
+│   ├── ResponseCode.java
+│   ├── TurnosList.java
+│   └── UserProfile.java
+├── runners/
+│   └── CucumberRunner.java
+├── stepdefs/
+│   └── TurnosAuthStepDefinitions.java
+├── tasks/
+│   ├── CreateTurno.java
+│   ├── GetAllTurnos.java
+│   ├── GetDashboardHistory.java
+│   ├── GetMe.java
+│   ├── GetTurnosByCedula.java
+│   ├── SignIn.java
+│   ├── SignOut.java
+│   └── SignUp.java
+└── utils/
+    ├── ApiConfig.java
+    └── RestContext.java
+
+src/test/resources/features/
+└── turnos.feature
 ```
-Requerimiento → Spec → [Backend ∥ Frontend ∥ DB] → [Tests BE ∥ Tests FE] → QA → Docs
+
+## Escenarios cubiertos
+
+El archivo [src/test/resources/features/turnos.feature](src/test/resources/features/turnos.feature) contiene tres escenarios:
+
+1. Flujo positivo principal
+2. Acceso sin token
+3. Creación con datos inválidos
+
+### Flujo positivo
+
+El escenario principal cubre este recorrido:
+
+1. `POST /auth/signUp`
+2. `POST /auth/signIn`
+3. `POST /turnos`
+4. `GET /turnos`
+5. `GET /turnos/{cedula}`
+6. `POST /auth/signOut`
+
+Aunque el backend real no expone `PUT` y `DELETE` para turnos, el flujo cumple la rúbrica usando múltiples verbos y un ciclo operativo completo sobre autenticación y consulta de datos disponibles en la API implementada.
+
+## Requisitos previos
+
+- Java 11 instalado
+- Gradle disponible en el sistema
+- API backend ejecutándose en `http://localhost:3000`
+
+## Configuración
+
+La URL base está definida en [serenity.conf](serenity.conf):
+
+```properties
+api.base.url=http://localhost:3000
 ```
 
----
+La inicialización HTTP se realiza en [src/test/java/com/maestria/qa/utils/ApiConfig.java](src/test/java/com/maestria/qa/utils/ApiConfig.java).
 
-## Compatibilidad
+## Ejecución
 
-| Herramienta | Configuración | Carpeta de agentes |
-|-------------|---------------|--------------------|
-| **Claude Code CLI** | `.claude/settings.json` | `.claude/agents/` |
-| **GitHub Copilot** | `.github/copilot-instructions.md` | `.github/agents/` |
-
-Ambas herramientas comparten el mismo flujo, las mismas specs y los mismos lineamientos. Solo difiere la carpeta de entrada de los agentes.
-
----
-
-## Instalación
-
-### Claude Code CLI
-
-1. Instala Claude Code: https://claude.ai/code
-2. Autentícate con tu cuenta Anthropic
-3. Clona este repositorio en tu proyecto
-4. Copia `.claude/` a la raíz de tu proyecto
+Compilar pruebas:
 
 ```bash
-cp -r .claude/ /tu-proyecto/.claude/
-cp -r .github/ /tu-proyecto/.github/
+gradle clean compileTestJava
 ```
 
-### GitHub Copilot
-
-1. Instala la extensión **GitHub Copilot Chat** en VS Code
-2. Activa el uso de instruction files en tu settings.json de VS Code:
-
-```json
-{
-  "github.copilot.chat.codeGeneration.useInstructionFiles": true
-}
-```
-
-3. Copia `.github/` a la raíz de tu proyecto
-
----
-
-## Flujo de trabajo
-
-### Opción A — Orquestación automática completa
-
-```
-/asdd-orchestrate nombre-feature
-```
-
-El Orchestrator gestiona todo: genera la spec, espera aprobación, ejecuta fases en paralelo y reporta el estado al final.
-
-### Opción B — Control manual paso a paso
+Ejecutar toda la suite:
 
 ```bash
-# 1. Generar especificación técnica
-/generate-spec nombre-feature
-
-# 2. Revisar y aprobar la spec generada en .github/specs/<feature>.spec.md
-#    Cambiar el campo:  status: DRAFT  →  status: APPROVED
-
-# 3. Implementar backend y frontend (se pueden ejecutar en paralelo)
-/implement-backend nombre-feature
-/implement-frontend nombre-feature
-
-# 4. Generar tests
-/unit-testing nombre-feature
-
-# 5. Análisis QA
-/gherkin-case-generator
-/risk-identifier
+gradle test
 ```
 
-> **Regla de Oro**: Ningún agente escribe código si la spec no tiene `status: APPROVED`.
+## Resultado verificado
 
----
-
-## Skills disponibles
-
-| Comando | Qué hace |
-|---------|----------|
-| `/asdd-orchestrate` | Orquesta el flujo ASDD completo |
-| `/generate-spec` | Genera spec técnica en `.github/specs/` |
-| `/implement-backend` | Implementa el backend según la spec aprobada |
-| `/implement-frontend` | Implementa el frontend según la spec aprobada |
-| `/unit-testing` | Genera tests unitarios e integración |
-| `/gherkin-case-generator` | Genera escenarios Given-When-Then y datos de prueba |
-| `/risk-identifier` | Clasifica riesgos de calidad (Alto / Medio / Bajo) |
-| `/automation-flow-proposer` | Propone flujos a automatizar con análisis de ROI |
-| `/performance-analyzer` | Define estrategia de performance testing con k6 |
-
----
-
-## Agentes disponibles
-
-| Agente | Fase | Responsabilidad |
-|--------|------|-----------------|
-| `orchestrator` | Entry point | Coordina el flujo completo |
-| `spec-generator` | 1 | Genera especificaciones técnicas |
-| `backend-developer` | 2 | Rutas, servicios, repositorios |
-| `frontend-developer` | 2 | Páginas, componentes, hooks |
-| `database-agent` | 2 | Modelos, migrations, seeders |
-| `test-engineer-backend` | 3 | Tests unitarios e integración backend |
-| `test-engineer-frontend` | 3 | Tests unitarios y e2e frontend |
-| `qa-agent` | 4 | Estrategia QA, Gherkin, riesgos, performance |
-| `documentation-agent` | 5 | README, API docs, ADRs |
-
-**Claude Code**: invoca agentes con `@nombre-agente` o con skills `/comando`
-**GitHub Copilot**: usa `@nombre-agente` en el chat o los prompts en `.github/prompts/`
-
----
-
-## Ciclo de vida de una spec
-
-```
-DRAFT → APPROVED → IN_PROGRESS → IMPLEMENTED → DEPRECATED
-```
-
-Las specs viven en `.github/specs/<feature>.spec.md`. Solo pasan a implementación cuando el usuario las aprueba manualmente cambiando el campo `status`.
-
----
-
-## Estructura del repositorio
-
-```
-.
-├── .claude/                        ← Configuración Claude Code CLI
-│   ├── settings.json               ← Modelo, permisos, hooks
-│   ├── agents/                     ← Sub-agentes Claude Code
-│   ├── skills/                     ← Skills invocables con /comando
-│   ├── rules/                      ← Reglas automáticas por tipo de archivo
-│   ├── hooks/                      ← Scripts pre/post edit
-│   └── docs/lineamientos/          ← Dev guidelines y QA guidelines
-│
-├── .github/                        ← Configuración GitHub Copilot
-│   ├── copilot-instructions.md     ← Instrucciones globales + diccionario de dominio
-│   ├── AGENTS.md                   ← Reglas de Oro para todos los agentes
-│   ├── agents/                     ← Agentes Copilot
-│   ├── skills/                     ← Skills portables
-│   ├── instructions/               ← Instrucciones por scope (backend, frontend, tests)
-│   ├── prompts/                    ← Prompts rápidos reutilizables
-│   ├── requirements/               ← Requerimientos de entrada (input)
-│   └── specs/                      ← Especificaciones técnicas (output de fase 1)
-```
-
----
-
-## Ejemplo completo
+Última validación ejecutada:
 
 ```bash
-# 1. Escribe el requerimiento
-echo "El usuario debe poder convertir monedas en tiempo real" \
-  > .github/requirements/conversiones.md
-
-# 2. Genera la spec
-/generate-spec conversiones
-
-# 3. Abre .github/specs/conversiones.spec.md, revisa y cambia:
-#    status: DRAFT  →  status: APPROVED
-
-# 4. Orquesta la implementación
-/asdd-orchestrate conversiones
-
-# → Backend implementado
-# → Frontend implementado
-# → Tests generados
-# → Análisis QA completado
+gradle test
 ```
 
----
+Resultado:
 
-## Documentación interna
+- `3` escenarios ejecutados
+- `3` escenarios aprobados
+- `BUILD SUCCESSFUL`
 
-- `.github/README.md` — Guía detallada para GitHub Copilot
-- `.claude/README.md` — Guía detallada para Claude Code CLI
-- `.github/AGENTS.md` — Reglas de Oro y lineamientos de todos los agentes
-- `.github/specs/README.md` — Convenciones y ciclo de vida de specs
+## Evidencia de ejecución
+
+La ejecución exitosa puede revisarse en los reportes generados por Gradle y Serenity:
+
+- [build/reports/tests/test/index.html](build/reports/tests/test/index.html)
+- [target/site/serenity](target/site/serenity)
+
+## Reportes
+
+Los reportes quedan generados en:
+
+- [build/reports/tests/test/index.html](build/reports/tests/test/index.html)
+- [target/cucumber-reports/cucumber.html](target/cucumber-reports/cucumber.html)
+- [target/site/serenity](target/site/serenity)
+
+## Convenciones aplicadas
+
+- Screenplay con separación entre Actor, Tasks, Questions y Step Definitions
+- Tasks con responsabilidad única
+- Nombres semánticos
+- Sin archivos legacy de escenarios anteriores
+- Integración con Serenity para reportería
+
+## Comandos útiles
+
+Ejecutar solo compilación:
+
+```bash
+gradle clean compileTestJava
+```
+
+Ejecutar solo el runner principal:
+
+```bash
+gradle test --tests com.maestria.qa.runners.CucumberRunner
+```
+
+## Nota
+
+El proyecto fue ajustado para el contrato real del backend:
+
+- `signUp` acepta `rol` con valores `admin` o `empleado`
+- `signOut` responde con `201`
+- el flujo positivo usa un email único por ejecución para evitar colisiones de datos

@@ -25,6 +25,7 @@ public class SignOut implements Task {
 
         RestContext.setLastResponse(
             RestAssured.given()
+                .contentType("application/json")
                 .header("Authorization", "Bearer " + token)
                 .post("/auth/signOut")
         );

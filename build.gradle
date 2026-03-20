@@ -28,7 +28,6 @@ dependencies {
     // Cucumber
     testImplementation "io.cucumber:cucumber-java:${cucumberVersion}"
     testImplementation "io.cucumber:cucumber-junit:${cucumberVersion}"
-    testImplementation "io.cucumber:cucumber-picocontainer:${cucumberVersion}"
 
     // REST Assured (utilizado por Serenity)
     testImplementation "io.rest-assured:rest-assured:${restAssuredVersion}"

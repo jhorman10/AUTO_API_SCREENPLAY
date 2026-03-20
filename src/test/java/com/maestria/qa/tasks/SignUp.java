@@ -51,7 +51,7 @@ public class SignUp implements Task {
     }
 
     public static SignUp withCredentials(String email, String password) {
-        return new SignUp(email, password, email.split("@")[0], "user");
+        return new SignUp(email, password, email.split("@")[0], "empleado");
     }
 
     public static SignUp withFullDetails(String email, String password, String nombre, String rol) {
