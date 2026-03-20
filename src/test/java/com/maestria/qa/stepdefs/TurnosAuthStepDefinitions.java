@@ -30,8 +30,6 @@ public class TurnosAuthStepDefinitions {
 
     private Actor actor;
     private String currentEmail;
-    private String currentPassword;
-    private long currentCedula;
 
     @Before
     public void setupStage() {
@@ -57,7 +55,6 @@ public class TurnosAuthStepDefinitions {
     public void registersNewUser(String email, String password) {
         actor = ApiTester.withDefaultName();
         currentEmail = buildUniqueEmail(email);
-        currentPassword = password;
         logger.info("Registering user: {}", currentEmail);
         actor.attemptsTo(SignUp.withCredentials(currentEmail, password));
     }
@@ -70,7 +67,6 @@ public class TurnosAuthStepDefinitions {
 
     @And("creates a turno with cedula {long} name {string} and priority {string}")
     public void createsTurno(long cedula, String nombre, String priority) {
-        currentCedula = cedula;
         logger.info("Creating turno for cedula: {} - {}", cedula, nombre);
         actor.attemptsTo(CreateTurno.forPatientWithPriority(cedula, nombre, priority));
     }
