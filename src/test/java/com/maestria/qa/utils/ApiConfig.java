@@ -18,7 +18,7 @@ public class ApiConfig {
     }
     
     private static void loadConfiguration() {
-        baseUrl = getProperty("api.base.url", "http://localhost:8000/api/v1");
+        baseUrl = getProperty("api.base.url", "http://localhost:3000");
         timeout = Integer.parseInt(getProperty("api.timeout", "5000"));
         maxRetries = Integer.parseInt(getProperty("api.max.retries", "1"));
         

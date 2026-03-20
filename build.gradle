@@ -1,6 +1,5 @@
 plugins {
     id 'java'
-    id 'net.serenity-bdd.serenity-gradle-plugin' version '3.6.0'
 }
 
 group = 'com.maestria.qa'
@@ -14,7 +13,7 @@ sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
 
 ext {
-    serenityVersion = '3.6.0'
+    serenityVersion = '4.1.5'
     cucumberVersion = '7.14.0'
     restAssuredVersion = '5.3.2'
 }
@@ -23,7 +22,7 @@ dependencies {
     // Serenity BDD
     testImplementation "net.serenity-bdd:serenity-core:${serenityVersion}"
     testImplementation "net.serenity-bdd:serenity-rest-assured:${serenityVersion}"
-    testImplementation "net.serenity-bdd:serenity-cucumber6:${serenityVersion}"
+    testImplementation "net.serenity-bdd:serenity-cucumber:${serenityVersion}"
     testImplementation "net.serenity-bdd:serenity-junit:${serenityVersion}"
 
     // Cucumber
@@ -51,17 +50,10 @@ dependencies {
 }
 
 test {
-    useJUnit {
-        includeCategories 'net.serenity_bdd.junit.runners.SerenityRunner'
-    }
+    useJUnit()
 
     testLogging {
         events "passed", "skipped", "failed"
         exceptionFormat "full"
     }
-}
-
-serenity {
-    testRoot 'com.maestria.qa'
-    outputDirectory 'target/site/serenity'
 }
