@@ -219,7 +219,9 @@ Abrir reporte de Cucumber en Linux:
 xdg-open target/cucumber-reports/cucumber.html
 ```
 
-Listar artefactos de Serenity:
+Serenity en este proyecto genera evidencia JSON/XML (sin `index.html` en `target/site/serenity`).
+
+Listar artefactos de Serenity en Linux:
 
 ```bash
 ls target/site/serenity/
