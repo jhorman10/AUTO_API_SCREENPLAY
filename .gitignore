@@ -1,0 +1,58 @@
+# Build & Gradle
+.gradle/
+build/
+target/
+out/
+*.class
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# IDE - IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# IDE - VS Code
+.vscode/
+*.code-workspace
+
+# IDE - Eclipse
+.project
+.classpath
+.settings/
+bin/
+
+# Serenity Reports (generated on each run)
+target/site/serenity/
+target/cucumber-reports/
+target/serenity/
+serenity-summary.txt
+
+# Gradle Wrapper
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+
+# Logs
+logs/
+*.log
+
+# OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temp Files
+*.tmp
+*.temp
+*.swp
+*~
+
+# Test screenshots/recordings (not applicable for API but safe to include)
+test-output/
+screenshots/

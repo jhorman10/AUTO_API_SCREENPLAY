@@ -1,0 +1,67 @@
+plugins {
+    id 'java'
+    id 'net.serenity-bdd.serenity-gradle-plugin' version '3.6.0'
+}
+
+group = 'com.maestria.qa'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+ext {
+    serenityVersion = '3.6.0'
+    cucumberVersion = '7.14.0'
+    restAssuredVersion = '5.3.2'
+}
+
+dependencies {
+    // Serenity BDD
+    testImplementation "net.serenity-bdd:serenity-core:${serenityVersion}"
+    testImplementation "net.serenity-bdd:serenity-rest-assured:${serenityVersion}"
+    testImplementation "net.serenity-bdd:serenity-cucumber6:${serenityVersion}"
+    testImplementation "net.serenity-bdd:serenity-junit:${serenityVersion}"
+
+    // Cucumber
+    testImplementation "io.cucumber:cucumber-java:${cucumberVersion}"
+    testImplementation "io.cucumber:cucumber-junit:${cucumberVersion}"
+    testImplementation "io.cucumber:cucumber-picocontainer:${cucumberVersion}"
+
+    // REST Assured (utilizado por Serenity)
+    testImplementation "io.rest-assured:rest-assured:${restAssuredVersion}"
+    testImplementation "io.rest-assured:json-path:${restAssuredVersion}"
+    testImplementation "io.rest-assured:xml-path:${restAssuredVersion}"
+
+    // JSON & Utilities
+    testImplementation "com.google.code.gson:gson:2.10.1"
+    testImplementation "com.fasterxml.jackson.core:jackson-databind:2.15.3"
+
+    // Logging
+    testImplementation "org.slf4j:slf4j-api:2.0.9"
+    testImplementation "ch.qos.logback:logback-classic:1.4.11"
+
+    // Testing
+    testImplementation "junit:junit:4.13.2"
+    testImplementation "org.hamcrest:hamcrest:2.2"
+    testImplementation "org.assertj:assertj-core:3.24.1"
+}
+
+test {
+    useJUnit {
+        includeCategories 'net.serenity_bdd.junit.runners.SerenityRunner'
+    }
+
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat "full"
+    }
+}
+
+serenity {
+    testRoot 'com.maestria.qa'
+    outputDirectory 'target/site/serenity'
+}
