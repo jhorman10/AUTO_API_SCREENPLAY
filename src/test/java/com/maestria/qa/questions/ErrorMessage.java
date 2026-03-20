@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.maestria.qa.utils.RestContext;
+import com.maestria.qa.utils.TestConstants;
 
 import net.serenitybdd.screenplay.Question;
 
@@ -13,7 +14,7 @@ public class ErrorMessage implements Question<String> {
 
     @Override
     public String answeredBy(net.serenitybdd.screenplay.Actor actor) {
-        String message = RestContext.getLastResponse().jsonPath().get("message");
+        String message = RestContext.getLastResponse().jsonPath().get(TestConstants.Payload.MESSAGE);
         logger.info("Error message from response: {}", message);
         return message;
     }

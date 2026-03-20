@@ -158,6 +158,8 @@ Ejecutar toda la suite:
 gradle test
 ```
 
+Este comando ahora también genera automáticamente el reporte HTML de Serenity al finalizar la ejecución.
+
 Ejecutar por tags:
 
 ```bash
@@ -205,7 +207,8 @@ Los reportes se generan en:
 - [build/reports/tests/test/index.html](build/reports/tests/test/index.html) - Reporte Gradle
 - [target/cucumber-reports/cucumber.html](target/cucumber-reports/cucumber.html) - Reporte Cucumber
 - [target/cucumber-reports/cucumber.json](target/cucumber-reports/cucumber.json) - Resultado JSON para integración CI
-- [target/site/serenity](target/site/serenity) - Evidencia Serenity (JSON/XML)
+- [target/site/serenity/index.html](target/site/serenity/index.html) - Reporte HTML interactivo de Serenity
+- [target/site/serenity](target/site/serenity) - Evidencia base de Serenity (HTML/JSON/XML)
 
 Abrir reporte de Gradle en Linux:
 
@@ -219,7 +222,17 @@ Abrir reporte de Cucumber en Linux:
 xdg-open target/cucumber-reports/cucumber.html
 ```
 
-Serenity en este proyecto genera evidencia JSON/XML (sin `index.html` en `target/site/serenity`).
+Abrir reporte de Serenity en Linux:
+
+```bash
+xdg-open target/site/serenity/index.html
+```
+
+Regenerar solo el HTML de Serenity usando resultados existentes:
+
+```bash
+gradle generateSerenityReport
+```
 
 Listar artefactos de Serenity en Linux:
 

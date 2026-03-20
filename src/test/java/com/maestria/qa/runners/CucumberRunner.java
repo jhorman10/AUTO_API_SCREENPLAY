@@ -2,20 +2,22 @@ package com.maestria.qa.runners;
 
 import org.junit.runner.RunWith;
 
+import com.maestria.qa.utils.TestConstants;
+
 import io.cucumber.junit.CucumberOptions;
 import net.serenitybdd.cucumber.CucumberWithSerenity;
 
 @RunWith(CucumberWithSerenity.class)
 @CucumberOptions(
-    features = "src/test/resources/features",
-    glue = "com.maestria.qa.stepdefs",
+    features = TestConstants.Cucumber.FEATURES_PATH,
+    glue = TestConstants.Cucumber.GLUE_PATH,
     plugin = {
-        "pretty",
-        "junit:target/cucumber-reports/cucumber.xml",
-        "json:target/cucumber-reports/cucumber.json",
-        "html:target/cucumber-reports/cucumber.html"
+        TestConstants.Cucumber.PRETTY_PLUGIN,
+        TestConstants.Cucumber.JUNIT_PLUGIN,
+        TestConstants.Cucumber.JSON_PLUGIN,
+        TestConstants.Cucumber.HTML_PLUGIN
     },
-    tags = "not @wip",
+    tags = TestConstants.Cucumber.DEFAULT_TAG_FILTER,
     monochrome = false,
     dryRun = false
 )

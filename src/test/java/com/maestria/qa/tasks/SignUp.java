@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.JsonObject;
 import com.maestria.qa.utils.RestContext;
+import com.maestria.qa.utils.TestConstants;
 
 import io.restassured.RestAssured;
 import net.serenitybdd.screenplay.Actor;
@@ -27,7 +28,7 @@ public class SignUp implements Task {
     }
 
     public SignUp(String email, String password) {
-        this(email, password, "QA Tester", "empleado");
+        this(email, password, TestConstants.Defaults.USER_NAME, TestConstants.Defaults.ROLE);
     }
 
     @Override
@@ -35,23 +36,28 @@ public class SignUp implements Task {
         logger.info("Registering new user with email: {}", email);
 
         JsonObject body = new JsonObject();
-        body.addProperty("email", email);
-        body.addProperty("password", password);
-        body.addProperty("nombre", nombre);
-        body.addProperty("rol", rol);
+        body.addProperty(TestConstants.Payload.EMAIL, email);
+        body.addProperty(TestConstants.Payload.PASSWORD, password);
+        body.addProperty(TestConstants.Payload.NOMBRE, nombre);
+        body.addProperty(TestConstants.Payload.ROL, rol);
 
         RestContext.setLastResponse(
             RestAssured.given()
-                .contentType("application/json")
+                .contentType(TestConstants.Api.CONTENT_TYPE_JSON)
                 .body(body.toString())
-                .post("/auth/signUp")
+                .post(TestConstants.Api.SIGN_UP_ENDPOINT)
         );
 
-        logger.info("POST /auth/signUp executed");
+        logger.info("POST {} executed", TestConstants.Api.SIGN_UP_ENDPOINT);
     }
 
     public static SignUp withCredentials(String email, String password) {
-        return new SignUp(email, password, email.split("@")[0], "empleado");
+        return new SignUp(
+            email,
+            password,
+            email.split(TestConstants.Email.ADDRESS_SEPARATOR)[0],
+            TestConstants.Defaults.ROLE
+        );
     }
 
     public static SignUp withFullDetails(String email, String password, String nombre, String rol) {

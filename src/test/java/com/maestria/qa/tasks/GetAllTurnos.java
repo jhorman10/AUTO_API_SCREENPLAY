@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.maestria.qa.utils.RestContext;
+import com.maestria.qa.utils.TestConstants;
 
 import io.restassured.RestAssured;
 import net.serenitybdd.screenplay.Actor;
@@ -19,10 +20,10 @@ public class GetAllTurnos implements Task {
 
         RestContext.setLastResponse(
             RestAssured.given()
-                .get("/turnos")
+                .get(TestConstants.Api.TURNOS_ENDPOINT)
         );
 
-        logger.info("GET /turnos executed");
+        logger.info("GET {} executed", TestConstants.Api.TURNOS_ENDPOINT);
     }
 
     public static GetAllTurnos fromTheApi() {

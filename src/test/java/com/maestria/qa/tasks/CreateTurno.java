@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.JsonObject;
 import com.maestria.qa.utils.RestContext;
+import com.maestria.qa.utils.TestConstants;
 
 import io.restassured.RestAssured;
 import net.serenitybdd.screenplay.Actor;
@@ -25,7 +26,7 @@ public class CreateTurno implements Task {
     }
 
     public CreateTurno(long cedula, String nombre) {
-        this(cedula, nombre, "media");
+        this(cedula, nombre, TestConstants.Defaults.PRIORITY);
     }
 
     @Override
@@ -33,22 +34,22 @@ public class CreateTurno implements Task {
         logger.info("Creating turno for patient: {} - {}", cedula, nombre);
 
         JsonObject body = new JsonObject();
-        body.addProperty("cedula", cedula);
-        body.addProperty("nombre", nombre);
-        body.addProperty("priority", priority);
+        body.addProperty(TestConstants.Payload.CEDULA, cedula);
+        body.addProperty(TestConstants.Payload.NOMBRE, nombre);
+        body.addProperty(TestConstants.Payload.PRIORITY, priority);
 
         RestContext.setLastResponse(
             RestAssured.given()
-                .contentType("application/json")
+                .contentType(TestConstants.Api.CONTENT_TYPE_JSON)
                 .body(body.toString())
-                .post("/turnos")
+                .post(TestConstants.Api.TURNOS_ENDPOINT)
         );
 
-        logger.info("POST /turnos executed");
+        logger.info("POST {} executed", TestConstants.Api.TURNOS_ENDPOINT);
     }
 
     public static CreateTurno forPatient(long cedula, String nombre) {
-        return new CreateTurno(cedula, nombre, "media");
+        return new CreateTurno(cedula, nombre, TestConstants.Defaults.PRIORITY);
     }
 
     public static CreateTurno forPatientWithPriority(long cedula, String nombre, String priority) {

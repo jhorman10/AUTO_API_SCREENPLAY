@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.maestria.qa.utils.RestContext;
+import com.maestria.qa.utils.TestConstants;
 
 import io.restassured.RestAssured;
 import net.serenitybdd.screenplay.Actor;
@@ -25,10 +26,10 @@ public class GetTurnosByCedula implements Task {
 
         RestContext.setLastResponse(
             RestAssured.given()
-                .get("/turnos/" + cedula)
+                .get(TestConstants.Api.TURNOS_ENDPOINT + TestConstants.Api.PATH_SEPARATOR + cedula)
         );
 
-        logger.info("GET /turnos/{} executed", cedula);
+        logger.info("GET {}/{} executed", TestConstants.Api.TURNOS_ENDPOINT, cedula);
     }
 
     public static GetTurnosByCedula forPatient(long cedula) {

@@ -18,9 +18,15 @@ public class ApiConfig {
     }
     
     private static void loadConfiguration() {
-        baseUrl = getProperty("api.base.url", "http://localhost:3000");
-        timeout = Integer.parseInt(getProperty("api.timeout", "5000"));
-        maxRetries = Integer.parseInt(getProperty("api.max.retries", "1"));
+        baseUrl = getProperty(TestConstants.Api.BASE_URL_PROPERTY, TestConstants.Api.DEFAULT_BASE_URL);
+        timeout = Integer.parseInt(getProperty(
+            TestConstants.Api.TIMEOUT_PROPERTY,
+            String.valueOf(TestConstants.Api.DEFAULT_TIMEOUT_MS)
+        ));
+        maxRetries = Integer.parseInt(getProperty(
+            TestConstants.Api.MAX_RETRIES_PROPERTY,
+            String.valueOf(TestConstants.Api.DEFAULT_MAX_RETRIES)
+        ));
         
         logger.info("API Configuration loaded:");
         logger.info("  Base URL: {}", baseUrl);
@@ -34,8 +40,8 @@ public class ApiConfig {
         RestAssured.baseURI = baseUrl;
         RestAssured.config = RestAssuredConfig.config()
             .httpClient(HttpClientConfig.httpClientConfig()
-                .setParam("http.connection.timeout", timeout)
-                .setParam("http.socket.timeout", timeout)
+                .setParam(TestConstants.Api.CONNECTION_TIMEOUT_PARAM, timeout)
+                .setParam(TestConstants.Api.SOCKET_TIMEOUT_PARAM, timeout)
             );
     }
     

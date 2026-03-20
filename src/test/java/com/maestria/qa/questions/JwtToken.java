@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.maestria.qa.utils.RestContext;
+import com.maestria.qa.utils.TestConstants;
 
 import net.serenitybdd.screenplay.Question;
 
@@ -13,7 +14,7 @@ public class JwtToken implements Question<String> {
 
     @Override
     public String answeredBy(net.serenitybdd.screenplay.Actor actor) {
-        String token = RestContext.getLastResponse().jsonPath().get("token");
+        String token = RestContext.getLastResponse().jsonPath().get(TestConstants.Payload.TOKEN);
         logger.info("Extracted JWT token from response");
         return token;
     }

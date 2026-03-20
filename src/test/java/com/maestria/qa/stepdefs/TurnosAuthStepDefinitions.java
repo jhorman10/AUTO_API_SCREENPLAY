@@ -14,6 +14,7 @@ import com.maestria.qa.tasks.GetTurnosByCedula;
 import com.maestria.qa.tasks.SignUp;
 import com.maestria.qa.utils.ApiConfig;
 import com.maestria.qa.utils.RestContext;
+import com.maestria.qa.utils.TestConstants;
 
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
@@ -109,7 +110,7 @@ public class TurnosAuthStepDefinitions {
             long cedula = Long.parseLong(invalidCedula);
             actor.attemptsTo(CreateTurno.forPatient(cedula, nombre));
         } catch (NumberFormatException e) {
-            actor.attemptsTo(CreateTurno.forPatient(0L, nombre));
+            actor.attemptsTo(CreateTurno.forPatient(TestConstants.Defaults.INVALID_CEDULA, nombre));
             logger.info("Invalid cedula format used: {}", invalidCedula);
         }
     }
@@ -121,10 +122,14 @@ public class TurnosAuthStepDefinitions {
     }
 
     private String buildUniqueEmail(String baseEmail) {
-        String[] parts = baseEmail.split("@", 2);
-        if (parts.length != 2) {
+        String[] parts = baseEmail.split(TestConstants.Email.ADDRESS_SEPARATOR, TestConstants.Email.ADDRESS_PARTS);
+        if (parts.length != TestConstants.Email.ADDRESS_PARTS) {
             return baseEmail;
         }
-        return parts[0] + "+" + System.currentTimeMillis() + "@" + parts[1];
+        return parts[0]
+            + TestConstants.Email.ALIAS_SEPARATOR
+            + System.currentTimeMillis()
+            + TestConstants.Email.ADDRESS_SEPARATOR
+            + parts[1];
     }
 }

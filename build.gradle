@@ -48,8 +48,16 @@ dependencies {
     testImplementation "org.assertj:assertj-core:3.24.1"
 }
 
+task generateSerenityReport(type: JavaExec) {
+    group = 'verification'
+    description = 'Generates the Serenity HTML report from the executed test outcomes.'
+    classpath = sourceSets.test.runtimeClasspath
+    main = 'com.maestria.qa.utils.SerenityReportGenerator'
+}
+
 test {
     useJUnit()
+    finalizedBy generateSerenityReport
 
     testLogging {
         events "passed", "skipped", "failed"

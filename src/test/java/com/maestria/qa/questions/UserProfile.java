@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.maestria.qa.utils.RestContext;
+import com.maestria.qa.utils.TestConstants;
 
 import net.serenitybdd.screenplay.Question;
 
@@ -29,14 +30,14 @@ public class UserProfile implements Question<String> {
     }
 
     public static UserProfile email() {
-        return new UserProfile("email");
+        return new UserProfile(TestConstants.Payload.EMAIL);
     }
 
     public static UserProfile nombre() {
-        return new UserProfile("nombre");
+        return new UserProfile(TestConstants.Payload.NOMBRE);
     }
 
     public static UserProfile rol() {
-        return new UserProfile("rol");
+        return new UserProfile(TestConstants.Payload.ROL);
     }
 }
