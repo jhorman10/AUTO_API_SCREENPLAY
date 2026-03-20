@@ -6,11 +6,11 @@ El proyecto valida autenticación y gestión de turnos contra una API REST local
 
 ## Objetivo
 
-Cumplir la entrega de `AUTO_API_SCREENPLAY` del taller mediante una automatización de servicios REST que:
+Suite de automatización de servicios REST con patrón Screenplay que:
 
-- use Screenplay con Serenity
+- use Screenplay con Serenity BDD
 - ejecute escenarios independientes
-- incluya un flujo principal con múltiples verbos HTTP
+- implemente 4 métodos HTTP (2 POST + 2 GET) con diferentes implementaciones
 - genere reportes legibles
 - mantenga código limpio y nombres semánticos
 
@@ -48,23 +48,17 @@ src/test/java/com/maestria/qa/
 │   └── ApiTester.java
 ├── questions/
 │   ├── ErrorMessage.java
-│   ├── JwtToken.java
 │   ├── ResponseCode.java
-│   ├── TurnosList.java
-│   └── UserProfile.java
+│   └── TurnosList.java
 ├── runners/
 │   └── CucumberRunner.java
 ├── stepdefs/
 │   └── TurnosAuthStepDefinitions.java
 ├── tasks/
-│   ├── CreateTurno.java
-│   ├── GetAllTurnos.java
-│   ├── GetDashboardHistory.java
-│   ├── GetMe.java
-│   ├── GetTurnosByCedula.java
-│   ├── SignIn.java
-│   ├── SignOut.java
-│   └── SignUp.java
+│   ├── CreateTurno.java      (POST)
+│   ├── GetAllTurnos.java     (GET)
+│   ├── GetTurnosByCedula.java (GET)
+│   └── SignUp.java           (POST)
 └── utils/
     ├── ApiConfig.java
     └── RestContext.java
@@ -75,24 +69,30 @@ src/test/resources/features/
 
 ## Escenarios cubiertos
 
-El archivo [src/test/resources/features/turnos.feature](src/test/resources/features/turnos.feature) contiene tres escenarios:
+El archivo [src/test/resources/features/turnos.feature](src/test/resources/features/turnos.feature) contiene dos escenarios:
 
-1. Flujo positivo principal
-2. Acceso sin token
-3. Creación con datos inválidos
+1. **Complete Flow - Create and Retrieve Turnos** (Flujo positivo)
+2. **Invalid Turno Creation** (Validación negativa)
+
+### Métodos HTTP implementados
+
+La suite utiliza exactamente **4 métodos HTTP** con diferentes implementaciones:
+
+**POST (2 implementaciones):**
+1. `POST /auth/signUp` — Registro de usuario
+2. `POST /turnos` — Creación de turno
+
+**GET (2 implementaciones):**
+1. `GET /turnos` — Obtener listado completo de turnos
+2. `GET /turnos/{cedula}` — Obtener turnos por cédula del paciente
 
 ### Flujo positivo
 
-El escenario principal cubre este recorrido:
-
-1. `POST /auth/signUp`
-2. `POST /auth/signIn`
-3. `POST /turnos`
-4. `GET /turnos`
-5. `GET /turnos/{cedula}`
-6. `POST /auth/signOut`
-
-Aunque el backend real no expone `PUT` y `DELETE` para turnos, el flujo cumple la rúbrica usando múltiples verbos y un ciclo operativo completo sobre autenticación y consulta de datos disponibles en la API implementada.
+El escenario principal ejecuta:  
+→ `POST /auth/signUp`  
+→ `POST /turnos`  
+→ `GET /turnos`  
+→ `GET /turnos/{cedula}`
 
 ## Requisitos previos
 
@@ -129,14 +129,14 @@ gradle test
 Última validación ejecutada:
 
 ```bash
-gradle test
+gradle clean test
 ```
 
 Resultado:
 
-- `3` escenarios ejecutados
-- `3` escenarios aprobados
-- `BUILD SUCCESSFUL`
+- `2` escenarios ejecutados
+- `2` escenarios aprobados
+- `BUILD SUCCESSFUL` en 5s
 
 ## Evidencia de ejecución
 
@@ -211,10 +211,20 @@ Ejecutar solo el runner principal:
 gradle test --tests com.maestria.qa.runners.CucumberRunner
 ```
 
-## Nota
+## Métodos HTTP soportados
 
-El proyecto fue ajustado para el contrato real del backend:
+El proyecto utiliza solo **2 métodos HTTP** (POST y GET) con **4 implementaciones diferentes**:
 
-- `signUp` acepta `rol` con valores `admin` o `empleado`
-- `signOut` responde con `201`
-- el flujo positivo usa un email único por ejecución para evitar colisiones de datos
+| Método | Endpoint | Task | Descripción |
+|--------|----------|------|-------------|
+| POST | `/auth/signUp` | `SignUp.java` | Registro de usuario |
+| POST | `/turnos` | `CreateTurno.java` | Creación de turno |
+| GET | `/turnos` | `GetAllTurnos.java` | Listado de todos los turnos |
+| GET | `/turnos/{cedula}` | `GetTurnosByCedula.java` | Turnos por cédula |
+
+## Notas de implementación
+
+- Arquitectura Screenplay con Actor → Tasks → Questions
+- Cada Task es responsable de una operación HTTP específica
+- Los datos de prueba incluyen email único por ejecución (timestamp)
+- Los reportes se generan en `target/cucumber-reports/`

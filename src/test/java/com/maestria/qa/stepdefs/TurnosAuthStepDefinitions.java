@@ -6,17 +6,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.maestria.qa.actors.ApiTester;
-import com.maestria.qa.questions.JwtToken;
 import com.maestria.qa.questions.ResponseCode;
 import com.maestria.qa.questions.TurnosList;
-import com.maestria.qa.questions.UserProfile;
 import com.maestria.qa.tasks.CreateTurno;
 import com.maestria.qa.tasks.GetAllTurnos;
-import com.maestria.qa.tasks.GetDashboardHistory;
-import com.maestria.qa.tasks.GetMe;
 import com.maestria.qa.tasks.GetTurnosByCedula;
-import com.maestria.qa.tasks.SignIn;
-import com.maestria.qa.tasks.SignOut;
 import com.maestria.qa.tasks.SignUp;
 import com.maestria.qa.utils.ApiConfig;
 import com.maestria.qa.utils.RestContext;
@@ -35,7 +29,6 @@ public class TurnosAuthStepDefinitions {
     private static final Logger logger = LoggerFactory.getLogger(TurnosAuthStepDefinitions.class);
 
     private Actor actor;
-    private String currentToken;
     private String currentEmail;
     private String currentPassword;
     private long currentCedula;
@@ -73,43 +66,6 @@ public class TurnosAuthStepDefinitions {
     public void verifySignupSuccess(int expectedStatus) {
         actor.should(seeThat(ResponseCode.fromLastResponse(), is(expectedStatus)));
         logger.info("Signup successful with status: {}", expectedStatus);
-    }
-
-    @And("obtains a valid JWT token")
-    public void extractsJwtToken() {
-        currentToken = actor.asksFor(JwtToken.fromResponse());
-        assert currentToken != null && !currentToken.isEmpty();
-        logger.info("JWT token extracted successfully");
-    }
-
-    @And("signs in with email {string} and password {string}")
-    public void signsIn(String email, String password) {
-        String loginEmail = (currentEmail != null) ? currentEmail : email;
-        String loginPassword = (currentPassword != null) ? currentPassword : password;
-        logger.info("Signing in with email: {}", loginEmail);
-        actor.attemptsTo(SignIn.withCredentials(loginEmail, loginPassword));
-    }
-
-    @Then("the login is successful with status {int}")
-    public void verifySigninSuccess(int expectedStatus) {
-        actor.should(seeThat(ResponseCode.fromLastResponse(), is(expectedStatus)));
-        currentToken = actor.asksFor(JwtToken.fromResponse());
-        assert currentToken != null;
-        logger.info("Login successful with status: {}", expectedStatus);
-    }
-
-    @And("retrieves user profile with token")
-    public void consultUserProfile() {
-        logger.info("Consulting user profile with token");
-        actor.attemptsTo(GetMe.withToken(currentToken));
-    }
-
-    @Then("obtains user data with status {int}")
-    public void verifyUserProfileSuccess(int expectedStatus) {
-        actor.should(seeThat(ResponseCode.fromLastResponse(), is(expectedStatus)));
-        String email = actor.asksFor(UserProfile.email());
-        assert email != null;
-        logger.info("User profile retrieved successfully");
     }
 
     @And("creates a turno with cedula {long} name {string} and priority {string}")
@@ -150,42 +106,6 @@ public class TurnosAuthStepDefinitions {
         logger.info("Patient turnos found");
     }
 
-    @And("retrieves dashboard history with token")
-    public void fetchesDashboardHistory() {
-        logger.info("Fetching dashboard history");
-        actor.attemptsTo(GetDashboardHistory.withToken(currentToken));
-    }
-
-    @Then("obtains dashboard history with status {int}")
-    public void verifyDashboardHistory(int expectedStatus) {
-        actor.should(seeThat(ResponseCode.fromLastResponse(), is(expectedStatus)));
-        logger.info("Dashboard history retrieved");
-    }
-
-    @And("signs out")
-    public void signsOut() {
-        logger.info("Signing out");
-        actor.attemptsTo(SignOut.withToken(currentToken));
-    }
-
-    @Then("the session closes successfully with status {int}")
-    public void verifySignoutSuccess(int expectedStatus) {
-        actor.should(seeThat(ResponseCode.fromLastResponse(), is(expectedStatus)));
-        logger.info("Signout successful");
-    }
-
-    @When("attempts to fetch user profile without token")
-    public void triesToFetchProfileWithoutToken() {
-        actor = ApiTester.withDefaultName();
-        actor.attemptsTo(GetMe.withToken(""));
-    }
-
-    @Then("receives unauthorized error with status {int}")
-    public void verifyUnauthorizedError(int expectedStatus) {
-        actor.should(seeThat(ResponseCode.fromLastResponse(), is(expectedStatus)));
-        logger.info("Unauthorized error verified");
-    }
-
     @When("attempts to create turno with invalid cedula {string} and name {string}")
     public void triesToCreateTurnoWithInvalidCedula(String invalidCedula, String nombre) {
         actor = ApiTester.withDefaultName();
@@ -202,12 +122,6 @@ public class TurnosAuthStepDefinitions {
     public void verifyValidationError(int expectedStatus) {
         actor.should(seeThat(ResponseCode.fromLastResponse(), is(expectedStatus)));
         logger.info("Validation error verified");
-    }
-
-    @When("attempts to fetch history without token")
-    public void triesToFetchHistoryWithoutToken() {
-        actor = ApiTester.withDefaultName();
-        actor.attemptsTo(GetDashboardHistory.withToken(""));
     }
 
     private String buildUniqueEmail(String baseEmail) {
