@@ -149,9 +149,45 @@ La ejecución exitosa puede revisarse en los reportes generados por Gradle y Ser
 
 Los reportes quedan generados en:
 
-- [build/reports/tests/test/index.html](build/reports/tests/test/index.html)
-- [target/cucumber-reports/cucumber.html](target/cucumber-reports/cucumber.html)
-- [target/site/serenity](target/site/serenity)
+- [build/reports/tests/test/index.html](build/reports/tests/test/index.html) — Reporte Gradle
+- [target/cucumber-reports/cucumber.html](target/cucumber-reports/cucumber.html) — Reporte Cucumber
+- [target/site/serenity/](target/site/serenity/) — Datos de Serenity (JSON)
+
+### Abrir reporte de Gradle
+
+macOS:
+
+```bash
+open build/reports/tests/test/index.html
+```
+
+Linux:
+
+```bash
+xdg-open build/reports/tests/test/index.html
+```
+
+### Abrir reporte de Cucumber
+
+macOS:
+
+```bash
+open target/cucumber-reports/cucumber.html
+```
+
+Linux:
+
+```bash
+xdg-open target/cucumber-reports/cucumber.html
+```
+
+### Ver datos de Serenity
+
+Los datos de Serenity están en formato JSON en `target/site/serenity/`:
+
+```bash
+ls target/site/serenity/
+```
 
 ## Convenciones aplicadas
 
