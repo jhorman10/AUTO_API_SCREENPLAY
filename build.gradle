@@ -58,6 +58,7 @@ task generateSerenityReport(type: JavaExec) {
 test {
     useJUnit()
     finalizedBy generateSerenityReport
+    systemProperties System.properties
 
     testLogging {
         events "passed", "skipped", "failed"
